@@ -26,7 +26,7 @@ namespace Chessington.GameEngine
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is Square && Equals((Square)obj);
+            return obj is Square && Equals((Square) obj);
         }
 
         public override int GetHashCode()
@@ -54,19 +54,13 @@ namespace Chessington.GameEngine
 
         public bool IsInbound()
         {
-            return Enumerable.Range(0, 8).Contains(this.Col) && Enumerable.Range(0, 8).Contains(this.Row);
+            return this.Col >= 0 && this.Col < GameSettings.BoardSize && this.Row >= 0 &&
+                   this.Row < GameSettings.BoardSize;
         }
 
         public bool IsOccupied(Board board)
         {
-            if (board.GetPiece(this) == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return board.GetPiece(this) != null;
         }
     }
 }
