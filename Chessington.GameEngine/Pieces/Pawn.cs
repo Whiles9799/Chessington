@@ -15,15 +15,33 @@ namespace Chessington.GameEngine.Pieces
             var currentRow = currentPos.Row;
             var currentCol = currentPos.Col;
 
-            if (!Square.At(currentRow + direction, currentCol).IsOccupied(board))
+            if (Square.At(currentRow + direction, currentCol).CanMoveTo(board))
             {
                 yield return Square.At(currentRow + direction, currentCol);
 
                 if (currentRow == startingRow &&
-                    !Square.At(currentRow + 2 * direction, currentCol).IsOccupied(board))
+                    Square.At(currentRow + 2 * direction, currentCol).CanMoveTo(board))
                 {
                     yield return Square.At(currentRow + 2 * direction, currentCol);
                 }
+            }
+        }
+
+        public IEnumerable<Square> PawnTake(Board board, int direction)
+        {
+            var currentPos = board.FindPiece(this);
+            var currentRow = currentPos.Row;
+            var currentCol = currentPos.Col;
+
+            var diagonallyRight = Square.At(currentRow + direction, currentCol + 1);
+            var diagonallyLeft = Square.At(currentRow + direction, currentCol - 1);
+            if (diagonallyRight.CanMoveOrTake(board, this) && diagonallyRight.IsOccupied(board))
+            {
+                yield return Square.At(currentRow + direction, currentCol + 1);
+            }
+            if (diagonallyLeft.CanMoveOrTake(board, this) && diagonallyLeft.IsOccupied(board))
+            {
+                yield return Square.At(currentRow + direction, currentCol - 1);
             }
         }
         
@@ -31,11 +49,11 @@ namespace Chessington.GameEngine.Pieces
         {
             if (Player == Player.White)
             {
-                return PawnMove(board, -1, GameSettings.BoardSize - 2);
+                return PawnMove(board, -1, GameSettings.BoardSize - 2).Concat(PawnTake(board, -1));
             }
             else
             {
-                return PawnMove(board, 1, 1);
+                return PawnMove(board, 1, 1).Concat(PawnTake(board, 1));
             }
         }
     }
