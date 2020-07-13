@@ -72,5 +72,10 @@ namespace Chessington.GameEngine
         {
             return this.IsInbound() && !this.IsOccupied(board);
         }
+
+        public bool CanMoveTo(Board board)
+        {
+            return this.IsInbound() && !this.IsOccupied(board);
+        }
     }
 }
