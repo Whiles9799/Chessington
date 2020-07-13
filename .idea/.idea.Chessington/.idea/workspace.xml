@@ -36,6 +36,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/Chessington.GameEngine/Square.cs" />
         <option value="$PROJECT_DIR$/Chessington.GameEngine/Pieces/Knight.cs" />
         <option value="$PROJECT_DIR$/Chessington.GameEngine/Pieces/King.cs" />
         <option value="$PROJECT_DIR$/Chessington.GameEngine.Tests/Pieces/RookTests.cs" />
