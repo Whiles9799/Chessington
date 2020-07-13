@@ -54,7 +54,7 @@ namespace Chessington.GameEngine
 
         public bool IsInbound()
         {
-            return Enumerable.Range(0, 8).Contains(this.Col) && Enumerable.Range(0, 8).Contains(this.Row);
+            return Col >= 0 && Col < 8 && Row >= 0 && Row < 8;
         }
     }
 }
