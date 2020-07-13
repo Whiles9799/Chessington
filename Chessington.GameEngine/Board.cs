@@ -25,6 +25,11 @@ namespace Chessington.GameEngine
         {
             board[square.Row, square.Col] = pawn;
         }
+
+        public void RemovePiece(Square square)
+        {
+            board[square.Row, square.Col] = null;
+        }
     
         public Piece GetPiece(Square square)
         {

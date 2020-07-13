@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Chessington.GameEngine.Pieces;
 using FluentAssertions;
 using NUnit.Framework;
@@ -8,6 +9,18 @@ namespace Chessington.GameEngine.Tests.Pieces
     [TestFixture]
     public class PawnTests
     {
+        [Test]
+        public void WhitePawn_MovesToBlackBackLine_PromotedToQueen()
+        {
+            var board = new Board();
+            var pawn = new Pawn(Player.White);
+            board.AddPiece(Square.At(1,0), pawn);
+            
+            pawn.MoveTo(board, Square.At(0,0));
+
+            board.GetPiece(Square.At(0, 0)).Should().BeOfType(typeof(Queen));
+        }
+        
         [Test]
         public void WhitePawns_CanMoveOneSquareUp()
         {

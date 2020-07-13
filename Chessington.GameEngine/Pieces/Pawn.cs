@@ -9,6 +9,13 @@ namespace Chessington.GameEngine.Pieces
         public Pawn(Player player) 
             : base(player) { }
 
+
+        public void PawnPromote(Board board, Square currentSquare, Square newSquare)
+        {
+            board.RemovePiece(currentSquare);
+            board.AddPiece(newSquare, new Queen(board.CurrentPlayer));
+        }
+        
         public IEnumerable<Square> PawnMove(Board board, int direction, int startingRow)
         {
             var currentPos = board.FindPiece(this);

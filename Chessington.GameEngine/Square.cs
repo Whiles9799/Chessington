@@ -69,16 +69,6 @@ namespace Chessington.GameEngine
             return this.IsInbound() && !this.IsOccupied(board);
         }
 
-        public bool CanMoveTo(Board board)
-        {
-            return this.IsInbound() && !this.IsOccupied(board);
-        }
-
-        public bool CanMoveTo(Board board)
-        {
-            return this.IsInbound() && !this.IsOccupied(board);
-        }
-
         public bool CanMoveOrTake(Board board, Piece piece)
         {
             return IsInbound() && (board.GetPiece(this) == null || board.GetPiece(this).Player != piece.Player);

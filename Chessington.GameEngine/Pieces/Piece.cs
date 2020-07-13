@@ -18,7 +18,15 @@ namespace Chessington.GameEngine.Pieces
         public void MoveTo(Board board, Square newSquare)
         {
             var currentSquare = board.FindPiece(this);
-            board.MovePiece(currentSquare, newSquare);
+            if(board.CurrentPlayer == Player.White && newSquare.Row == 0 && this.GetType() == typeof(Pawn) ||
+                board.CurrentPlayer == Player.Black && newSquare.Row == GameSettings.BoardSize - 1 && GetType() == typeof(Pawn))
+                {
+                    ((Pawn)this).PawnPromote(board, currentSquare, newSquare);
+                }
+            else
+            {
+                board.MovePiece(currentSquare, newSquare);
+            }
         }
 
         public IEnumerable<Square> GetDiagonalMoves(Board board)
