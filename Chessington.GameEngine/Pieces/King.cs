@@ -21,7 +21,7 @@ namespace Chessington.GameEngine.Pieces
             {
                 foreach (var colDiff in Enumerable.Range(-1, 3))
                 {
-                    if (Square.At(currentRow + rowDiff, currentCol + colDiff).CanMoveOrTake(board, this))
+                    if (board.CanMoveOrTake(Square.At(currentRow + rowDiff, currentCol + colDiff),this))
                     {
                         availableMoves.Add(Square.At(currentRow + rowDiff, currentCol + colDiff));
                     }

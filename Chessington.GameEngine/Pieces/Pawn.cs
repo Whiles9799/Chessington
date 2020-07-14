@@ -9,18 +9,18 @@ namespace Chessington.GameEngine.Pieces
         public Pawn(Player player) 
             : base(player) { }
 
-        public IEnumerable<Square> PawnMove(Board board, int direction, int startingRow)
+        public IEnumerable<Square> PawnMove(Board board, int direction)
         {
             var currentPos = board.FindPiece(this);
             var currentRow = currentPos.Row;
             var currentCol = currentPos.Col;
 
-            if (Square.At(currentRow + direction, currentCol).CanMoveTo(board))
+            if (board.CanMoveTo(Square.At(currentRow + direction, currentCol)))
             {
                 yield return Square.At(currentRow + direction, currentCol);
 
-                if (currentRow == startingRow &&
-                    Square.At(currentRow + 2 * direction, currentCol).CanMoveTo(board))
+                if (!HasMoved &&
+                    board.CanMoveTo(Square.At(currentRow + 2 * direction, currentCol)))
                 {
                     yield return Square.At(currentRow + 2 * direction, currentCol);
                 }
@@ -35,13 +35,13 @@ namespace Chessington.GameEngine.Pieces
 
             var diagonallyRight = Square.At(currentRow + direction, currentCol + 1);
             var diagonallyLeft = Square.At(currentRow + direction, currentCol - 1);
-            if (diagonallyRight.CanMoveOrTake(board, this) && diagonallyRight.IsOccupied(board))
+            if (board.CanMoveOrTake(diagonallyRight, this) && board.IsOccupied(diagonallyRight))
             {
-                yield return Square.At(currentRow + direction, currentCol + 1);
+                yield return diagonallyRight;
             }
-            if (diagonallyLeft.CanMoveOrTake(board, this) && diagonallyLeft.IsOccupied(board))
+            if (board.CanMoveOrTake(diagonallyLeft, this) && board.IsOccupied(diagonallyLeft))
             {
-                yield return Square.At(currentRow + direction, currentCol - 1);
+                yield return diagonallyLeft;
             }
         }
         
@@ -49,11 +49,11 @@ namespace Chessington.GameEngine.Pieces
         {
             if (Player == Player.White)
             {
-                return PawnMove(board, -1, GameSettings.BoardSize - 2).Concat(PawnTake(board, -1));
+                return PawnMove(board, -1).Concat(PawnTake(board, -1));
             }
             else
             {
-                return PawnMove(board, 1, 1).Concat(PawnTake(board, 1));
+                return PawnMove(board, 1).Concat(PawnTake(board, 1));
             }
         }
     }
