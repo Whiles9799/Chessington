@@ -58,20 +58,5 @@ namespace Chessington.GameEngine
             return this.Col >= 0 && this.Col < GameSettings.BoardSize && this.Row >= 0 &&
                    this.Row < GameSettings.BoardSize;
         }
-
-        public bool IsOccupied(Board board)
-        {
-            return board.GetPiece(this) != null;
-        }
-
-        public bool CanMoveTo(Board board)
-        {
-            return this.IsInbound() && !this.IsOccupied(board);
-        }
-
-        public bool CanMoveOrTake(Board board, Piece piece)
-        {
-            return IsInbound() && (board.GetPiece(this) == null || board.GetPiece(this).Player != piece.Player);
-        }
     }
 }

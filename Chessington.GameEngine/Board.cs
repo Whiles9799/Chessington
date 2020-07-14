@@ -89,5 +89,20 @@ namespace Chessington.GameEngine
             var handler = CurrentPlayerChanged;
             if (handler != null) handler(player);
         }
+        
+        public bool IsOccupied(Square square)
+        {
+            return GetPiece(square) != null;
+        }
+
+        public bool CanMoveTo(Square square)
+        {
+            return square.IsInbound() && !IsOccupied(square);
+        }
+
+        public bool CanMoveOrTake(Square square, Piece piece)
+        {
+            return square.IsInbound() && (GetPiece(square) == null || GetPiece(square).Player != piece.Player);
+        }
     }
 }

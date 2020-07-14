@@ -6,6 +6,8 @@ namespace Chessington.GameEngine.Pieces
 {
     public abstract class Piece
     {
+        public bool HasMoved { get; set; }
+        
         protected Piece(Player player)
         {
             Player = player;
@@ -18,6 +20,7 @@ namespace Chessington.GameEngine.Pieces
         public void MoveTo(Board board, Square newSquare)
         {
             var currentSquare = board.FindPiece(this);
+            HasMoved = true;
             if(board.CurrentPlayer == Player.White && newSquare.Row == 0 && this.GetType() == typeof(Pawn) ||
                 board.CurrentPlayer == Player.Black && newSquare.Row == GameSettings.BoardSize - 1 && GetType() == typeof(Pawn))
                 {
@@ -33,10 +36,10 @@ namespace Chessington.GameEngine.Pieces
         {
             List<Square> availableMoves = new List<Square>();
 
-            availableMoves.AddRange(ExploreInOneDirection(1, 1, board));
-            availableMoves.AddRange(ExploreInOneDirection(1, -1, board));
-            availableMoves.AddRange(ExploreInOneDirection(-1, 1, board));
-            availableMoves.AddRange(ExploreInOneDirection(-1, -1, board));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row+1, x.Col+1)));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row+1, x.Col-1)));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row-1, x.Col+1)));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row-1, x.Col-1)));
 
             return availableMoves;
         }
@@ -45,38 +48,26 @@ namespace Chessington.GameEngine.Pieces
         {
             List<Square> availableMoves = new List<Square>();
 
-            availableMoves.AddRange(ExploreInOneDirection(1, 0, board));
-            availableMoves.AddRange(ExploreInOneDirection(-1, 0, board));
-            availableMoves.AddRange(ExploreInOneDirection(0, 1, board));
-            availableMoves.AddRange(ExploreInOneDirection(0, -1, board));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row+1, x.Col)));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row-1, x.Col)));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row, x.Col+1)));
+            availableMoves.AddRange(ExploreInOneDirection(board, x =>  Square.At(x.Row, x.Col-1)));
 
             return availableMoves;
         }
 
-        public IEnumerable<Square> ExploreInOneDirection(int rowDirection, int colDirection, Board board)
+        public IEnumerable<Square> ExploreInOneDirection(Board board, Func<Square, Square> iterator)
         {
-            var currentPos = board.FindPiece(this);
-            var currentRow = currentPos.Row;
-            var currentCol = currentPos.Col;
-            List<Square> availableMoves = new List<Square>();
-
-            int tileDistance = 1;
-            while (Square.At(currentRow + tileDistance * rowDirection, currentCol + tileDistance * colDirection)
-                       .CanMoveTo(board))
+            var nextSquare = iterator(board.FindPiece(this));
+            while (board.CanMoveOrTake(nextSquare, this))
             {
-                availableMoves.Add(Square.At(currentRow + tileDistance * rowDirection,
-                    currentCol + tileDistance * colDirection));
-                tileDistance++;
-            }
-
-            var nextSquare = Square.At(currentRow + tileDistance * rowDirection,
-                currentCol + tileDistance * colDirection);
-            if (nextSquare.CanMoveOrTake(board, this))
-            {
-                availableMoves.Add(nextSquare);
-            }
-
-            return availableMoves;
+                yield return nextSquare;
+                if (board.IsOccupied(nextSquare))
+                {
+                    break;
+                }
+                nextSquare = iterator(nextSquare);
+            } 
         }
     }
 }
